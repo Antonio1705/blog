@@ -41,7 +41,10 @@
                 <td th:text="${post.title}"></td>
                 <td th:text="${post.shortDescription}"></td>
                 <td th:text="${post.createdOn}"></td>
-                <td > actions :)</td>
+                <td >
+                    <a th:href="@{/api/admin/post/{postId}/edit(postId=${post.id})}" class="btn btn-primary">Edit</a>
+
+                </td>
 
             </tr>
 

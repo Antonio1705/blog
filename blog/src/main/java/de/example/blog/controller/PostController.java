@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -53,6 +50,31 @@ public class PostController {
         postDto.setUrl(getUrl(postDto.getTitle()));
         postService.createPost(postDto);
         return "redirect:/api/posts";
+    }
+
+    //handle method to handle edit post request from posts.html
+    @GetMapping("/admin/post/{postId}/edit")
+    public String editPostForm(@PathVariable Long postId, Model model){
+
+        PostDto postById = postService.findPostById(postId);
+
+        model.addAttribute("postUpdate",postById);
+
+        return "admin/edit_post";
+
+    }
+
+    @PostMapping("/admin/posts/{postId}")
+    public String handleUpdatePosts(@PathVariable Long postId,@Valid @ModelAttribute("postUpdate") PostDto modelAttributePostDto, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("postUpdate",modelAttributePostDto);
+            return "/admin/edit_post";
+        }
+        modelAttributePostDto.setId(postId);
+        modelAttributePostDto.setUrl(getUrl(modelAttributePostDto.getTitle()));
+        postService.updatePost(modelAttributePostDto);
+        return "redirect:/api/posts";
+
     }
 
     private static String getUrl(String postTitle){
