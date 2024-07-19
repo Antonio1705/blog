@@ -87,4 +87,11 @@ public class PostServiceImplementation implements PostService {
 
         throw new RuntimeException("Server error-----");
     }
+
+    @Override
+    public List<PostDto> searchPosts(String query) {
+        List<PostDto> postsDtoListOfSearch=  postRepository.searchPosts(query).stream().map(post -> postMapper.mapToPostDto(post)).toList();
+
+        return postsDtoListOfSearch;
+    }
 }

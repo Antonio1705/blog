@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "post-blog")
+@Table(name = "postblog")
 public class Post {
 
     @Id

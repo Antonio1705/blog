@@ -18,4 +18,6 @@ public interface PostService {
     void deletePost(Long id);
 
     PostDto findPostByUrl(String url);
+
+    List<PostDto> searchPosts(String query);
 }
