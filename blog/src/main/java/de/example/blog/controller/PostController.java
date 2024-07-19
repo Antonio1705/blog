@@ -92,6 +92,14 @@ public class PostController {
         return "admin/view_post";
     }
 
+    @GetMapping("/admin/posts/search")
+    public String searchPosts(@RequestParam(value = "query") String query, Model model){
+        List<PostDto> postDtoListSearch = postService.searchPosts(query);
+        model.addAttribute("allPosts",postDtoListSearch);
+
+        return "admin/posts";
+    }
+
     private static String getUrl(String postTitle){
         String title = postTitle.trim().toLowerCase();
         String url = title.replace("\\s+","-");
