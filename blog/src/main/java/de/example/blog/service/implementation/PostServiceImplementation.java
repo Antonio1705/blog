@@ -74,4 +74,17 @@ public class PostServiceImplementation implements PostService {
     public void deletePost(Long id) {
         postRepository.deleteById(id);
     }
+
+    @Override
+    public PostDto findPostByUrl(String url) {
+
+        Optional<Post> byUrl = postRepository.findByUrl(url);
+
+        if (byUrl.isPresent()){
+            PostDto postDto = postMapper.mapToPostDto(byUrl.get());
+            return postDto;
+        }
+
+        throw new RuntimeException("Server error-----");
+    }
 }
