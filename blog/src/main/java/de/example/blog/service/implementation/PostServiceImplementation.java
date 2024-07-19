@@ -69,4 +69,9 @@ public class PostServiceImplementation implements PostService {
         }
         throw  new RuntimeException("server fehler ");
     }
+
+    @Override
+    public void deletePost(Long id) {
+        postRepository.deleteById(id);
+    }
 }
