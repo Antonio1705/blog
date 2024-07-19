@@ -1,0 +1,64 @@
+package de.example.blog.controller;
+
+import de.example.blog.dto.PostDto;
+import de.example.blog.service.PostService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+
+@Controller
+@RequestMapping("/api")
+public class PostController {
+    @Autowired
+    PostService postService;
+
+    @GetMapping("/posts")
+    public String getAllPosts(Model model){
+
+        List<PostDto> allPosts = postService.findAllPosts();
+        model.addAttribute("allPosts",allPosts);
+        return "/admin/posts";
+    }
+
+
+    @GetMapping("/start")
+    public String getStartPage(){
+        return "index";
+    }
+
+    @GetMapping("/admin/newpost")
+    public String newPostForm(Model model){
+        PostDto postDto = new PostDto();
+        model.addAttribute("newPost",postDto );
+        return "admin/create_post";
+    }
+
+    @PostMapping("/admin/post")
+    public String newPostSave(@Valid @ModelAttribute("newPost") PostDto postDto, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("post",postDto);
+            return "/admin/create_post";
+        }
+
+        postDto.setUrl(getUrl(postDto.getTitle()));
+        postService.createPost(postDto);
+        return "redirect:/api/posts";
+    }
+
+    private static String getUrl(String postTitle){
+        String title = postTitle.trim().toLowerCase();
+        String url = title.replace("\\s+","-");
+        url = url.replaceAll("[^A-Za-z0-9]","-");
+        return url;
+    }
+}
