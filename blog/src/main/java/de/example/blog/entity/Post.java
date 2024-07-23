@@ -26,12 +26,14 @@ public class Post {
     @Column(nullable = false)
     private String url;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition="Text")
     private String content;
+
     private String shortDescription;
 
     @CreationTimestamp
-    private LocalDateTime createdOn;
+    private LocalDateTime createdOn ;
 
     @UpdateTimestamp
     private LocalDateTime updatedOn;
