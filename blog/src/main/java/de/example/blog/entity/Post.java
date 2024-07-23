@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -38,5 +40,8 @@ public class Post {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
-
+    //CascadeType.REMOVE heißt wenn einer diese entity löscht werden auch alle comments gelöscht die hier gespeichert sind
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private Set<Comment> comments = new HashSet<>();
 }

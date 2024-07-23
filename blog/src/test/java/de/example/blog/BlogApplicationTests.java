@@ -1,6 +1,8 @@
 package de.example.blog;
 
+import de.example.blog.entity.Comment;
 import de.example.blog.entity.Post;
+import de.example.blog.repository.CommentRepository;
 import de.example.blog.repository.PostRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,11 @@ class BlogApplicationTests {
 	@Autowired
 	PostRepository postRepository;
 
+	@Autowired
+	CommentRepository commentRepository;
+
 	@Test
 	void contextLoads() {
-
 
 	}
 
