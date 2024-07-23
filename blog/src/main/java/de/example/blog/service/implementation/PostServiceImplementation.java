@@ -7,6 +7,7 @@ import de.example.blog.repository.PostRepository;
 import de.example.blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -28,6 +29,7 @@ public class PostServiceImplementation implements PostService {
         return postDtoList;
     }
 
+    @Transactional
     @Override
     public PostDto createPost(PostDto postDto) {
         try {
@@ -56,7 +58,7 @@ public class PostServiceImplementation implements PostService {
     public PostDto updatePost(PostDto postDto) {
         Optional<Post> optionalPost = postRepository.findById(postDto.getId());
 
-        if (optionalPost.isPresent()) {
+            if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
             post.setContent(postDto.getContent());
             post.setTitle(postDto.getTitle());
@@ -75,6 +77,7 @@ public class PostServiceImplementation implements PostService {
         postRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PostDto findPostByUrl(String url) {
 
@@ -88,6 +91,7 @@ public class PostServiceImplementation implements PostService {
         throw new RuntimeException("Server error-----");
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<PostDto> searchPosts(String query) {
         List<PostDto> postsDtoListOfSearch=  postRepository.searchPosts(query).stream().map(post -> postMapper.mapToPostDto(post)).toList();
