@@ -8,6 +8,8 @@ import de.example.blog.service.CommentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CommentServiceImplementation implements CommentService {
 
@@ -26,5 +28,15 @@ public class CommentServiceImplementation implements CommentService {
         Post post = postRepository.findByUrl(postUrl).get();
         comment.setPost(post);
         commentRepository.save(comment);
+    }
+
+    @Override
+    public List<Comment> findAllComments() {
+        return commentRepository.findAll();
+    }
+
+    @Override
+    public void deleteCommentById(Long commentId) {
+        commentRepository.deleteById(commentId);
     }
 }

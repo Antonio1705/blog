@@ -1,6 +1,8 @@
 package de.example.blog.controller;
 
 import de.example.blog.dto.PostDto;
+import de.example.blog.entity.Comment;
+import de.example.blog.service.CommentService;
 import de.example.blog.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import java.util.List;
 public class PostController {
     @Autowired
     PostService postService;
+
+    @Autowired
+    CommentService commentService;
 
     @GetMapping("/posts-admin")
     public String getAllPosts(Model model) {
@@ -96,6 +101,25 @@ public class PostController {
         model.addAttribute("allPosts", postDtoListSearch);
         return "admin/posts";
     }
+
+    @GetMapping("/admin/posts/comments")
+    public String postComments(Model model){
+
+        List<Comment> allComments = commentService.findAllComments();
+
+        model.addAttribute("allComments", allComments);
+
+        return "admin/comments";
+    }
+
+    @GetMapping("/admin/comments/delete/{commentId}")
+    public String deleteComment(@PathVariable Long commentId){
+
+        commentService.deleteCommentById(commentId);
+
+        return "redirect:/api/admin/posts/comments";
+    }
+
 
     private static String getUrl(String postTitle) {
         String title = postTitle.trim().toLowerCase();
