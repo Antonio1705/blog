@@ -1,13 +1,12 @@
 package de.example.blog.controller;
 
 import de.example.blog.dto.PostDto;
+import de.example.blog.entity.Comment;
 import de.example.blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,7 +28,10 @@ public class BlogController {
     @GetMapping("/post/{postUrl}")
     public String showPostBlog(@PathVariable String postUrl, Model model){
         PostDto postByUrl = postService.findPostByUrl(postUrl);
+        Comment emptyComment = new Comment();
+
         model.addAttribute("postByUrl",postByUrl);
+        model.addAttribute("emptyComment", emptyComment);
 
         return "blog/blog_post";
 
