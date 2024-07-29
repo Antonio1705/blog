@@ -1,9 +1,11 @@
 package de.example.blog.dto;
 
+import de.example.blog.entity.Comment;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -21,4 +23,6 @@ public class PostDto {
     private String shortDescription;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
+
+    private Set<Comment> comments;
 }

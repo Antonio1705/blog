@@ -2,11 +2,13 @@ package de.example.blog.mapper;
 
 import de.example.blog.dto.PostDto;
 import de.example.blog.entity.Post;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PostMapper {
 
+    @Transactional
     //map post entity to PostDto
     public PostDto mapToPostDto(Post post){
         System.out.println(post);
@@ -18,6 +20,7 @@ public class PostMapper {
                 .shortDescription(post.getShortDescription())
                 .createdOn(post.getCreatedOn())
                 .updatedOn(post.getUpdatedOn())
+                .comments(post.getComments())
                 .build();
         return postDto;
     }
