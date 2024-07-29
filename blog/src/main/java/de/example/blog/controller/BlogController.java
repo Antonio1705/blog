@@ -17,7 +17,7 @@ public class BlogController {
     @Autowired
     private PostService postService;
 
-    @GetMapping("/a")
+    @GetMapping
     public String startSiteBlog(Model model){
         List<PostDto> allPosts = postService.findAllPosts();
 

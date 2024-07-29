@@ -7,7 +7,6 @@ import de.example.blog.mapper.PostMapper;
 import de.example.blog.repository.PostRepository;
 import de.example.blog.repository.UserRepository;
 import de.example.blog.service.PostService;
-import de.example.blog.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -75,10 +74,20 @@ public class PostServiceImplementation implements PostService {
         Optional<Post> optionalPost = postRepository.findById(postDto.getId());
 
         if (optionalPost.isPresent()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                throw new RuntimeException("Error: No authenticated user found");
+            }
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String email = userDetails.getUsername();
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found with email: " + email + "<<<<email"));
+
+
             Post post = optionalPost.get();
             post.setContent(postDto.getContent());
             post.setTitle(postDto.getTitle());
             post.setShortDescription(postDto.getShortDescription());
+            post.setCreatedBy(user);
             // Ensure the `createdOn` field is not updated
 
             postRepository.save(post);
@@ -113,5 +122,24 @@ public class PostServiceImplementation implements PostService {
         List<PostDto> postsDtoListOfSearch = postRepository.searchPosts(query).stream().map(post -> postMapper.mapToPostDto(post)).toList();
 
         return postsDtoListOfSearch;
+    }
+
+    @Override
+    public List<PostDto> findPostByUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Error: No authenticated user found");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found with email: " + email + "<<<<email"));
+
+        Long userId = user.getId();
+        System.out.println(userId + "<<<<<<<<<<<<<<<<<<<<<<<<<<ID");
+        List<Post> postByUser = postRepository.findByCreatedById(userId);
+
+        List<PostDto> postDtoByUser= postByUser.stream().map(post -> postMapper.mapToPostDto(post)).toList();
+
+        return postDtoByUser;
     }
 }
