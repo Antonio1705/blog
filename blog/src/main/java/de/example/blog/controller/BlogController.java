@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/blog")
 public class BlogController {
 
     @Autowired
     private PostService postService;
 
-    @GetMapping("/")
+    @GetMapping("/a")
     public String startSiteBlog(Model model){
         List<PostDto> allPosts = postService.findAllPosts();
 

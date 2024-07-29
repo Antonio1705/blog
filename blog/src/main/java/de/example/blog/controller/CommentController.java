@@ -12,8 +12,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/comment")
 public class CommentController {
 
     @Autowired
@@ -33,6 +35,6 @@ public class CommentController {
             return "blog/blog_post";
         }
         commentService.createComment(postUrl,comment);
-        return "redirect:/post/"+postUrl;
+        return "redirect:/blog/post/"+postUrl;
     }
 }

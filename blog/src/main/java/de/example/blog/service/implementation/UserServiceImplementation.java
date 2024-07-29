@@ -6,6 +6,7 @@ import de.example.blog.repository.RoleRepository;
 import de.example.blog.repository.UserRepository;
 import de.example.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -20,11 +21,14 @@ public class UserServiceImplementation implements UserService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     @Override
     public User saveUser(User user) {
-
-        Role roleGuest = roleRepository.findByName("ROLE_GUEST");
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Role roleGuest = roleRepository.findByName("ROLE_USER");
         user.setRoleList(Arrays.asList(roleGuest));
         User userSave= userRepository.save(user);
 

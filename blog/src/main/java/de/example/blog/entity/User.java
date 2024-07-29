@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -41,5 +42,5 @@ public class User {
             joinColumns = {@JoinColumn(name = "userId", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id",referencedColumnName = "id")}
     )
-    private List<Role> roleList;
+    private List<Role> roleList=new ArrayList<>();
 }

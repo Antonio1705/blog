@@ -19,6 +19,8 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+
+
     @GetMapping("/register")
     public String registrationHandling(Model model){
         User newEmptyUser = new User();
@@ -44,5 +46,11 @@ public class AuthController {
         }
         userService.saveUser(user);
         return "redirect:/register?success";
+    }
+
+    //handler method to handle login page request
+    @GetMapping("/login")
+    public String loginPage(){
+        return "login";
     }
 }
