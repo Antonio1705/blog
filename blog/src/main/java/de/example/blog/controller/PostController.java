@@ -4,6 +4,8 @@ import de.example.blog.dto.PostDto;
 import de.example.blog.entity.Comment;
 import de.example.blog.service.CommentService;
 import de.example.blog.service.PostService;
+import de.example.blog.util.ROLE;
+import de.example.blog.util.SecurityUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,9 +26,8 @@ public class PostController {
 
     @GetMapping("/posts-admin")
     public String getAllPosts(Model model) {
-
-        List<PostDto> allPosts = postService.findAllPosts();
-        model.addAttribute("allPosts", allPosts);
+        List<PostDto> postsByUser = postService.findPostByUser();
+        model.addAttribute("allPosts", postsByUser);
         return "/admin/posts";
     }
 
@@ -105,7 +106,7 @@ public class PostController {
     @GetMapping("/admin/posts/comments")
     public String postComments(Model model){
 
-        List<Comment> allComments = commentService.findAllComments();
+        List<Comment> allComments = commentService.findCommentByPost();
 
         model.addAttribute("allComments", allComments);
 
