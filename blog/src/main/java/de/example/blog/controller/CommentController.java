@@ -30,7 +30,7 @@ public class CommentController {
     public String addCommentToPost(@PathVariable String postUrl, @Valid @ModelAttribute(name = "emptyComment") Comment comment, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
             model.addAttribute("postByUrl",postService.findPostByUrl(postUrl));
-            model.addAttribute("unwichtigeatribt","TESTTESTTESTTEST");
+
             model.addAttribute("emptyComment",comment);
             return "blog/blog_post";
         }

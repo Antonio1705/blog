@@ -62,4 +62,21 @@ public class CommentServiceImplementation implements CommentService {
 
         return comments;
     }
+
+    @Override
+    public Comment newComment() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Error: No authenticated user found");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found with email: " + email + "<<<<email"));
+
+        Comment comment = new Comment();
+        comment.setName(user.getName());
+        comment.setEmail(user.getEmail());
+
+        return comment;
+    }
 }

@@ -2,6 +2,7 @@ package de.example.blog.controller;
 
 import de.example.blog.dto.PostDto;
 import de.example.blog.entity.Comment;
+import de.example.blog.service.CommentService;
 import de.example.blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,9 @@ public class BlogController {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private CommentService commentService;
+
     @GetMapping
     public String startSiteBlog(Model model){
         List<PostDto> allPosts = postService.findAllPosts();
@@ -29,7 +33,7 @@ public class BlogController {
     @GetMapping("/post/{postUrl}")
     public String showPostBlog(@PathVariable String postUrl, Model model){
         PostDto postByUrl = postService.findPostByUrl(postUrl);
-        Comment emptyComment = new Comment();
+        Comment emptyComment = commentService.newComment();
 
         model.addAttribute("postByUrl",postByUrl);
         model.addAttribute("emptyComment", emptyComment);

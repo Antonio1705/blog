@@ -33,11 +33,12 @@ public class WebSecurity {
                             .requestMatchers("/register/**").permitAll()
                             .requestMatchers("/api/**").hasRole("ADMIN")
                             .requestMatchers("/comment/**").hasAnyRole("USER","ADMIN")
+                            .requestMatchers("/").hasAnyRole("USER","ADMIN")
                             .requestMatchers("/blog/**").hasRole("USER");
 
                 })
                 .formLogin(form -> form.loginPage("/login")
-                        .defaultSuccessUrl("/api/posts-admin")
+                        .defaultSuccessUrl("/blog")
                         .loginProcessingUrl("/login")
                         .permitAll())
                 .logout(logout ->{

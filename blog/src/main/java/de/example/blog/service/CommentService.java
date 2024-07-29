@@ -13,4 +13,6 @@ public interface CommentService {
     void deleteCommentById(Long commentId);
 
     List<Comment> findCommentByPost();
+
+    Comment newComment();
 }
