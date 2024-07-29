@@ -52,7 +52,7 @@
                         <h2>Leave a comment</h2>
                     </div>
                     <div class="body">
-                        <form role="form" method="post" th:action="@{/{postUrl}/comments(postUrl=${postByUrl.url})}" th:object="${emptyComment}">
+                        <form role="form" method="post" th:action="@{/comment/{postUrl}/comments(postUrl=${postByUrl.url})}" th:object="${emptyComment}">
                             <div class="row">
                                 <div class="row-md-5 mb-3">
                                     <input class="form-control" id="name" name="name" placeholder="enter name" th:field="*{name}" type="text">
