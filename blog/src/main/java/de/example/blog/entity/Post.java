@@ -40,6 +40,10 @@ public class Post {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
+    @ManyToOne
+    @JoinColumn(name = "created_By", nullable = false)
+    private User createdBy;
+
     //CascadeType.REMOVE heißt wenn einer diese entity löscht werden auch alle comments gelöscht die hier gespeichert sind
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     @Builder.Default

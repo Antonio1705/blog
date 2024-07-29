@@ -2,16 +2,23 @@ package de.example.blog.service.implementation;
 
 import de.example.blog.dto.PostDto;
 import de.example.blog.entity.Post;
+import de.example.blog.entity.User;
 import de.example.blog.mapper.PostMapper;
 import de.example.blog.repository.PostRepository;
+import de.example.blog.repository.UserRepository;
 import de.example.blog.service.PostService;
+import de.example.blog.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Service
 public class PostServiceImplementation implements PostService {
@@ -21,6 +28,9 @@ public class PostServiceImplementation implements PostService {
 
     @Autowired
     PostMapper postMapper;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<PostDto> findAllPosts() {
@@ -32,13 +42,19 @@ public class PostServiceImplementation implements PostService {
     @Transactional
     @Override
     public PostDto createPost(PostDto postDto) {
-        try {
-            Post newPost = postMapper.mapToPostEntity(postDto);
-            postRepository.save(newPost);
-            return postDto;
-        }catch (Exception e){
-            throw new RuntimeException("Error: "+ e.getMessage());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Error: No authenticated user found");
         }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found with email: " + email + "<<<<email"));
+        Post newPost = postMapper.mapToPostEntity(postDto);
+        newPost.setCreatedBy(user);
+        postRepository.save(newPost);
+        return postDto;
+
     }
 
     @Override
@@ -48,8 +64,8 @@ public class PostServiceImplementation implements PostService {
 
             PostDto postDto = postMapper.mapToPostDto(post);
             return postDto;
-        }catch (Exception e){
-            throw new RuntimeException("Error: "+ e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error: " + e.getMessage());
         }
 
     }
@@ -58,7 +74,7 @@ public class PostServiceImplementation implements PostService {
     public PostDto updatePost(PostDto postDto) {
         Optional<Post> optionalPost = postRepository.findById(postDto.getId());
 
-            if (optionalPost.isPresent()) {
+        if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
             post.setContent(postDto.getContent());
             post.setTitle(postDto.getTitle());
@@ -69,7 +85,7 @@ public class PostServiceImplementation implements PostService {
 
             return postDto;
         }
-        throw  new RuntimeException("server fehler ");
+        throw new RuntimeException("server fehler ");
     }
 
     @Override
@@ -83,7 +99,7 @@ public class PostServiceImplementation implements PostService {
 
         Optional<Post> byUrl = postRepository.findByUrl(url);
 
-        if (byUrl.isPresent()){
+        if (byUrl.isPresent()) {
             PostDto postDto = postMapper.mapToPostDto(byUrl.get());
             return postDto;
         }
@@ -94,7 +110,7 @@ public class PostServiceImplementation implements PostService {
     @Transactional(readOnly = true)
     @Override
     public List<PostDto> searchPosts(String query) {
-        List<PostDto> postsDtoListOfSearch=  postRepository.searchPosts(query).stream().map(post -> postMapper.mapToPostDto(post)).toList();
+        List<PostDto> postsDtoListOfSearch = postRepository.searchPosts(query).stream().map(post -> postMapper.mapToPostDto(post)).toList();
 
         return postsDtoListOfSearch;
     }
